@@ -1,0 +1,10 @@
+{
+  "slug": "starter-app",
+  "name": "Portable App Starter",
+  "shortName": "Starter",
+  "description": "A reliable, installable personal web app.",
+  "theme": {
+    "primary": "#5F6F52",
+    "background": "#F6F1E7"
+  }
+}

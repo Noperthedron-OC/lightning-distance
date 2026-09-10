@@ -1,6 +1,8 @@
-# Portable Web App Starter
+# PWA Starter
 
-A maintained starting point for Erich's installable web utilities. It provides the shared warm-modernist design layer, mobile installation help, update-safe service-worker handling, visible build diagnostics, CI, and guarded deployment to AI Lab.
+Here **PWA means Portable Web App**. These apps use Progressive Web App browser capabilities, but portability across hosts and devices is the defining project goal.
+
+This is the maintained starting point for Erich's installable web utilities. It provides the shared warm-modernist design layer, mobile installation help, update-safe service-worker handling, visible build diagnostics, CI, and guarded deployment to AI Lab.
 
 ## Create an app
 
