@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import './App.css'
+import { usePwa } from './pwa/usePwa'
+import { PwaNotices } from './components/PwaNotices'
+import { AboutDiagnostics } from './components/AboutDiagnostics'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface StrikeRecord {
@@ -11,7 +14,7 @@ interface StrikeRecord {
 type AppPhase = 'idle' | 'watching' | 'flash' | 'thunder-detected'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const SUSTAIN_FRAMES = 24
+const SUSTAIN_FRAMES = 4
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function speedOfSound(tempC: number): number {
@@ -105,6 +108,18 @@ function IntroModal({ onClose }: { onClose: () => void }) {
 
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function App() {
+  const {
+    online,
+    offlineReady,
+    needRefresh,
+    registrationState,
+    checkForUpdates,
+    updateNow,
+    dismissOfflineReady,
+    dismissUpdate,
+    resetAppCaches,
+  } = usePwa()
+
   const [showIntro, setShowIntro] = useState(true)
   const [phase, setPhase] = useState<AppPhase>('idle')
   const [statusText, setStatusText] = useState('Tap Start to begin')
@@ -325,8 +340,9 @@ export default function App() {
       }
     }
 
-    // Set up audio
+    // Set up audio — resume() required on iOS where AudioContext starts suspended
     const audioCtx = new AudioContext()
+    await audioCtx.resume()
     audioCtxRef.current = audioCtx
     const src = audioCtx.createMediaStreamSource(stream!)
     const analyser = audioCtx.createAnalyser()
@@ -444,9 +460,24 @@ export default function App() {
     <>
       {showIntro && <IntroModal onClose={() => setShowIntro(false)} />}
 
+      <PwaNotices
+        online={online}
+        offlineReady={offlineReady}
+        needRefresh={needRefresh}
+        onUpdate={updateNow}
+        onDismissOffline={dismissOfflineReady}
+        onDismissUpdate={dismissUpdate}
+      />
+
       <div className="app-shell">
         <header className="app-header">
           <h1>⚡ Lightning Distance</h1>
+          <AboutDiagnostics
+            online={online}
+            registrationState={registrationState}
+            onCheck={() => void checkForUpdates()}
+            onResetCaches={resetAppCaches}
+          />
         </header>
 
         <main className="app-main">
