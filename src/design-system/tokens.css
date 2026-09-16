@@ -1,21 +1,21 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* App theme: customize these for each app. */
-  --color-canvas: #f6f1e7;
-  --color-surface: #fffdf8;
-  --color-surface-raised: #ffffff;
-  --color-text: #252722;
-  --color-text-muted: #696b63;
-  --color-border: #d8d3c8;
-  --color-primary: #5f6f52;
-  --color-primary-hover: #4f5f44;
-  --color-on-primary: #ffffff;
-  --color-accent: #d77852;
-  --color-focus: #1a73e8;
-  --color-success: #397a58;
-  --color-warning: #9b6818;
-  --color-danger: #b33a3a;
+  /* App theme: dark stormy night. */
+  --color-canvas: #0a0a0f;
+  --color-surface: #12121e;
+  --color-surface-raised: #1a1a2e;
+  --color-text: #e0e0e0;
+  --color-text-muted: #a0a0c0;
+  --color-border: #2a2a50;
+  --color-primary: #2a2a40;
+  --color-on-primary: #e0e0e0;
+  --color-accent: #ffe066;
+  --color-focus: #ffe066;
+  --color-success: #7fff7f;
+  --color-warning: #ff8c42;
+  --color-danger: #ff8888;
+  --color-thunder: #60b8ff;
 
   /* House tokens: keep stable across apps. */
   --font-ui:
@@ -52,19 +52,3 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --color-canvas: #1c1e1a;
-    --color-surface: #242720;
-    --color-surface-raised: #2b2f27;
-    --color-text: #f2eee5;
-    --color-text-muted: #b8b5aa;
-    --color-border: #44483e;
-    --color-primary: #a8bb91;
-    --color-primary-hover: #b8c9a3;
-    --color-on-primary: #182011;
-    --color-accent: #ed9773;
-    --color-focus: #84b6ff;
-  }
-}

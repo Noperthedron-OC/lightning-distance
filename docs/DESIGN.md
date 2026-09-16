@@ -1,23 +1,21 @@
-# Design definition
+# Lightning Distance — Design
 
-## Shared family
+## Theme
+Dark stormy night. Heavy blacks, muted blues, warm yellow accent (flash), cold blue secondary (thunder), green for results.
 
-This app uses the warm-modernist house system in `src/design-system/tokens.css`: stable typography, spacing, control geometry, focus behavior, motion, shared PWA notices, installation help, and diagnostics.
+## Tokens
+- `--color-canvas: #0a0a0f` — near-black background
+- `--color-surface: #12121e` — card backgrounds
+- `--color-surface-raised: #1a1a2e` — history items
+- `--color-text: #e0e0e0`
+- `--color-text-muted: #a0a0c0`
+- `--color-border: #2a2a50`
+- `--color-accent: #ffe066` — flash yellow (used for timer, flash state)
+- `--color-thunder: #60b8ff` — thunder blue
+- `--color-success: #7fff7f` — result/distance display
 
-## App identity
+## Navigation
+Single-page, no routing needed. Intro modal on first load.
 
-- Primary muted color:
-- Bright accent:
-- Icon concept:
-- Optional graphic motif:
-- Optional display typeface, if justified:
-
-Change app identity through semantic theme tokens. Components must not contain app-specific raw color values.
-
-## Navigation and density
-
-Describe the navigation model, primary phone layout, desktop adaptation, and whether comfortable or compact density is appropriate.
-
-## Deviations
-
-List intentional deviations from the shared system and link to the corresponding decision record.
+## Icon Concept
+Lightning bolt on dark background. Use yellow (#ffe066) bolt on #0a0a0f.

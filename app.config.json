@@ -1,10 +1,10 @@
 {
-  "slug": "starter-app",
-  "name": "Portable App Starter",
-  "shortName": "Starter",
-  "description": "A reliable, installable personal web app.",
+  "slug": "lightning-distance",
+  "name": "Lightning Distance",
+  "shortName": "Lightning",
+  "description": "Measure storm distance using camera flash detection and microphone thunder detection",
   "theme": {
-    "primary": "#5F6F52",
-    "background": "#F6F1E7"
+    "primary": "#0a0a0f",
+    "background": "#0a0a0f"
   }
 }
