@@ -284,7 +284,7 @@ export default function App() {
 
   // ── Start ───────────────────────────────────────────────────────────────────
   const start = useCallback(async () => {
-    let stream: MediaStream | null = null
+    let stream: MediaStream | null
     let audioOnly = false
 
     try {
