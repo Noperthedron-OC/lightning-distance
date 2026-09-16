@@ -1,9 +1,11 @@
 # Lightning Distance — Design
 
 ## Theme
+
 Dark stormy night. Heavy blacks, muted blues, warm yellow accent (flash), cold blue secondary (thunder), green for results.
 
 ## Tokens
+
 - `--color-canvas: #0a0a0f` — near-black background
 - `--color-surface: #12121e` — card backgrounds
 - `--color-surface-raised: #1a1a2e` — history items
@@ -15,7 +17,9 @@ Dark stormy night. Heavy blacks, muted blues, warm yellow accent (flash), cold b
 - `--color-success: #7fff7f` — result/distance display
 
 ## Navigation
+
 Single-page, no routing needed. Intro modal on first load.
 
 ## Icon Concept
+
 Lightning bolt on dark background. Use yellow (#ffe066) bolt on #0a0a0f.

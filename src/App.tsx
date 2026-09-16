@@ -20,7 +20,8 @@ function speedOfSound(tempC: number): number {
 
 function getAverageLuminance(imageData: ImageData): number {
   const d = imageData.data
-  let sum = 0, count = 0
+  let sum = 0,
+    count = 0
   for (let i = 0; i < d.length; i += 16) {
     sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]
     count++
@@ -31,21 +32,45 @@ function getAverageLuminance(imageData: ImageData): number {
 // ── Intro Modal ───────────────────────────────────────────────────────────────
 function IntroModal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+    <div
+      className="intro-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="intro-title"
+    >
       <div className="intro-box">
         <h2 id="intro-title">Lightning Distance</h2>
-        <p>This app measures how far away a thunderstorm is. It watches for a lightning flash through the camera and listens for the thunder through the microphone. The time between the two determines the distance.</p>
-        <p>Point the camera at the sky during a storm. When lightning flashes, the timer starts. When thunder arrives, it stops and shows the distance.</p>
-        <p>The app needs access to your camera and microphone to work. Both are used locally — nothing is sent anywhere.</p>
+        <p>
+          This app measures how far away a thunderstorm is. It watches for a
+          lightning flash through the camera and listens for the thunder through
+          the microphone. The time between the two determines the distance.
+        </p>
+        <p>
+          Point the camera at the sky during a storm. When lightning flashes,
+          the timer starts. When thunder arrives, it stops and shows the
+          distance.
+        </p>
+        <p>
+          The app needs access to your camera and microphone to work. Both are
+          used locally — nothing is sent anywhere.
+        </p>
 
         <details>
           <summary>📱 Install on Android</summary>
           <div className="install-steps">
             <ol>
-              <li>Open this page in <strong>Chrome</strong></li>
-              <li>Tap the <strong>⋮ menu</strong> (top right)</li>
-              <li>Tap <strong>"Add to Home screen"</strong></li>
-              <li>Tap <strong>Install</strong> to confirm</li>
+              <li>
+                Open this page in <strong>Chrome</strong>
+              </li>
+              <li>
+                Tap the <strong>⋮ menu</strong> (top right)
+              </li>
+              <li>
+                Tap <strong>"Add to Home screen"</strong>
+              </li>
+              <li>
+                Tap <strong>Install</strong> to confirm
+              </li>
             </ol>
           </div>
         </details>
@@ -54,15 +79,25 @@ function IntroModal({ onClose }: { onClose: () => void }) {
           <summary>🍎 Install on iPhone / iPad</summary>
           <div className="install-steps">
             <ol>
-              <li>Open this page in <strong>Safari</strong></li>
-              <li>Tap the <strong>Share button</strong> ⎙ (bottom bar)</li>
-              <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
-              <li>Tap <strong>Add</strong> to confirm</li>
+              <li>
+                Open this page in <strong>Safari</strong>
+              </li>
+              <li>
+                Tap the <strong>Share button</strong> ⎙ (bottom bar)
+              </li>
+              <li>
+                Scroll down and tap <strong>"Add to Home Screen"</strong>
+              </li>
+              <li>
+                Tap <strong>Add</strong> to confirm
+              </li>
             </ol>
           </div>
         </details>
 
-        <button className="btn-primary" onClick={onClose}>Got it</button>
+        <button className="btn-primary" onClick={onClose}>
+          Got it
+        </button>
       </div>
     </div>
   )
@@ -74,7 +109,12 @@ export default function App() {
   const [phase, setPhase] = useState<AppPhase>('idle')
   const [statusText, setStatusText] = useState('Tap Start to begin')
   const [timerSec, setTimerSec] = useState(0)
-  const [result, setResult] = useState<{ km: number; mi: number; sec: number; soundSpeed: number } | null>(null)
+  const [result, setResult] = useState<{
+    km: number
+    mi: number
+    sec: number
+    soundSpeed: number
+  } | null>(null)
   const [history, setHistory] = useState<StrikeRecord[]>([])
   const [audioOnlyMode, setAudioOnlyMode] = useState(false)
   const [running, setRunning] = useState(false)
@@ -132,7 +172,10 @@ export default function App() {
     const elapsed = (performance.now() - flashTimeRef.current) / 1000
     flashTimeRef.current = null
     thunderCooldownRef.current = 90
-    if (timerRafRef.current) { cancelAnimationFrame(timerRafRef.current); timerRafRef.current = null }
+    if (timerRafRef.current) {
+      cancelAnimationFrame(timerRafRef.current)
+      timerRafRef.current = null
+    }
 
     const v = speedOfSound(temperature)
     const distM = elapsed * v
@@ -142,7 +185,10 @@ export default function App() {
     setResult({ km: distKm, mi: distMi, sec: elapsed, soundSpeed: v })
     setPhase('thunder-detected')
     setStatusText('🌩 Thunder detected')
-    setHistory(h => [{ km: distKm, sec: elapsed, id: ++strikeIdRef.current }, ...h])
+    setHistory((h) => [
+      { km: distKm, sec: elapsed, id: ++strikeIdRef.current },
+      ...h,
+    ])
 
     setTimeout(() => {
       setStatusText('👁 Watching…')
@@ -152,7 +198,8 @@ export default function App() {
 
   // ── Thunder audio loop ──────────────────────────────────────────────────────
   const checkThunder = useCallback(() => {
-    if (!analyserRef.current || !audioDataRef.current || !audioCtxRef.current) return
+    if (!analyserRef.current || !audioDataRef.current || !audioCtxRef.current)
+      return
     analyserRef.current.getByteFrequencyData(audioDataRef.current)
 
     const binHz = audioCtxRef.current.sampleRate / analyserRef.current.fftSize
@@ -161,24 +208,30 @@ export default function App() {
     const midLo = Math.floor(200 / binHz)
     const midHi = Math.ceil(700 / binHz)
 
-    let lowSum = 0, midSum = 0
+    let lowSum = 0,
+      midSum = 0
     for (let i = lowLo; i <= lowHi; i++) lowSum += audioDataRef.current[i]
     for (let i = midLo; i <= midHi; i++) midSum += audioDataRef.current[i]
 
     const lowAvg = lowSum / (lowHi - lowLo + 1)
     const midAvg = midSum / (midHi - midLo + 1)
 
-    noiseFloorRef.current = 0.9983 * noiseFloorRef.current + 0.0017 * Math.max(lowAvg, 1)
+    noiseFloorRef.current =
+      0.9983 * noiseFloorRef.current + 0.0017 * Math.max(lowAvg, 1)
 
     const sensitivity = thunderSens
-    const multiplier = 1.5 + (100 - sensitivity) / 100 * 3.0
+    const multiplier = 1.5 + ((100 - sensitivity) / 100) * 3.0
     const exceedance = lowAvg / Math.max(noiseFloorRef.current, 1)
     const isThunderShape = lowAvg >= midAvg * 0.5
 
     if (thunderCooldownRef.current > 0) {
       thunderCooldownRef.current--
       sustainCountRef.current = 0
-    } else if (flashTimeRef.current && exceedance > multiplier && isThunderShape) {
+    } else if (
+      flashTimeRef.current &&
+      exceedance > multiplier &&
+      isThunderShape
+    ) {
       sustainCountRef.current++
       if (sustainCountRef.current >= SUSTAIN_FRAMES) {
         sustainCountRef.current = 0
@@ -209,13 +262,19 @@ export default function App() {
     history.push(lum)
     if (history.length > avgWindow) history.shift()
 
-    const avg = history.length ? history.reduce((a, b) => a + b, 0) / history.length : 0
+    const avg = history.length
+      ? history.reduce((a, b) => a + b, 0) / history.length
+      : 0
     setLumInfo(`lum ${lum.toFixed(1)} / avg ${avg.toFixed(1)}`)
     setBrightWarning(avg > 180)
 
     if (flashCooldownRef.current > 0) {
       flashCooldownRef.current--
-    } else if (!flashTimeRef.current && history.length >= avgWindow && avg > 0) {
+    } else if (
+      !flashTimeRef.current &&
+      history.length >= avgWindow &&
+      avg > 0
+    ) {
       const spike = ((lum - avg) / avg) * 100
       if (spike > flashSpike) onFlash()
     }
@@ -231,7 +290,7 @@ export default function App() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
-        audio: true
+        audio: true,
       })
     } catch {
       try {
@@ -239,9 +298,11 @@ export default function App() {
         audioOnly = true
       } catch (e2: unknown) {
         const err = e2 as DOMException
-        setStatusText(err.name === 'NotAllowedError'
-          ? 'Microphone blocked. Tap the lock icon in your browser to allow.'
-          : `Could not access microphone: ${err.message}`)
+        setStatusText(
+          err.name === 'NotAllowedError'
+            ? 'Microphone blocked. Tap the lock icon in your browser to allow.'
+            : `Could not access microphone: ${err.message}`,
+        )
         return
       }
     }
@@ -252,7 +313,11 @@ export default function App() {
       video.srcObject = new MediaStream(stream.getVideoTracks())
       video.playsInline = true
       video.muted = true
-      try { await video.play() } catch { /* ok */ }
+      try {
+        await video.play()
+      } catch {
+        /* ok */
+      }
       const canvas = canvasRef.current
       if (canvas) {
         canvas.width = video.videoWidth || 640
@@ -289,13 +354,22 @@ export default function App() {
     setRunning(false)
     setPhase('idle')
     flashTimeRef.current = null
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
-    if (thunderRafRef.current) { cancelAnimationFrame(thunderRafRef.current); thunderRafRef.current = null }
-    if (timerRafRef.current) { cancelAnimationFrame(timerRafRef.current); timerRafRef.current = null }
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+    if (thunderRafRef.current) {
+      cancelAnimationFrame(thunderRafRef.current)
+      thunderRafRef.current = null
+    }
+    if (timerRafRef.current) {
+      cancelAnimationFrame(timerRafRef.current)
+      timerRafRef.current = null
+    }
 
     const video = videoRef.current
     if (video?.srcObject) {
-      (video.srcObject as MediaStream).getTracks().forEach(t => t.stop())
+      ;(video.srcObject as MediaStream).getTracks().forEach((t) => t.stop())
       video.srcObject = null
     }
     videoRef.current = null
@@ -343,7 +417,10 @@ export default function App() {
 
   const handleReset = () => {
     flashTimeRef.current = null
-    if (timerRafRef.current) { cancelAnimationFrame(timerRafRef.current); timerRafRef.current = null }
+    if (timerRafRef.current) {
+      cancelAnimationFrame(timerRafRef.current)
+      timerRafRef.current = null
+    }
     setPhase('watching')
     setStatusText('👁 Watching…')
   }
@@ -354,10 +431,14 @@ export default function App() {
     else onFlash()
   }
 
-  const statusClass = phase === 'flash' ? 'status flash'
-    : phase === 'thunder-detected' ? 'status thunder'
-    : result ? 'status result'
-    : 'status'
+  const statusClass =
+    phase === 'flash'
+      ? 'status flash'
+      : phase === 'thunder-detected'
+        ? 'status thunder'
+        : result
+          ? 'status result'
+          : 'status'
 
   return (
     <>
@@ -370,7 +451,10 @@ export default function App() {
 
         <main className="app-main">
           {/* Camera view */}
-          <div className="camera-container" style={{ display: audioOnlyMode ? 'none' : undefined }}>
+          <div
+            className="camera-container"
+            style={{ display: audioOnlyMode ? 'none' : undefined }}
+          >
             <canvas
               ref={canvasRef}
               className="camera-canvas"
@@ -389,15 +473,24 @@ export default function App() {
           </div>
 
           {/* Status */}
-          <p className={statusClass} aria-live="polite">{statusText}</p>
-          {brightWarning && <p className="bright-warning">⚠️ Very bright scene — flash detection unreliable</p>}
+          <p className={statusClass} aria-live="polite">
+            {statusText}
+          </p>
+          {brightWarning && (
+            <p className="bright-warning">
+              ⚠️ Very bright scene — flash detection unreliable
+            </p>
+          )}
 
           {/* Result card */}
           {result && (
             <div className="result-card">
-              <div className="result-main">{result.km.toFixed(2)} km &nbsp; ({result.mi.toFixed(2)} mi)</div>
+              <div className="result-main">
+                {result.km.toFixed(2)} km &nbsp; ({result.mi.toFixed(2)} mi)
+              </div>
               <div className="result-sub">
-                {result.sec.toFixed(2)}s delay · {result.soundSpeed.toFixed(0)} m/s · Rule of thumb: {(result.sec / 3).toFixed(1)} km
+                {result.sec.toFixed(2)}s delay · {result.soundSpeed.toFixed(0)}{' '}
+                m/s · Rule of thumb: {(result.sec / 3).toFixed(1)} km
               </div>
             </div>
           )}
@@ -407,7 +500,7 @@ export default function App() {
             <div className="history-section">
               <h2 className="history-heading">Strike history</h2>
               <ul className="history-list">
-                {history.map(s => (
+                {history.map((s) => (
                   <li key={s.id} className="history-item">
                     {s.km.toFixed(2)} km ({s.sec.toFixed(1)}s)
                   </li>
@@ -422,26 +515,50 @@ export default function App() {
           <div className="controls">
             <div className="slider-row">
               <label htmlFor="flash-spike">Flash spike</label>
-              <input id="flash-spike" type="range" min={5} max={60} value={flashSpike}
-                onChange={e => setFlashSpike(Number(e.target.value))} />
+              <input
+                id="flash-spike"
+                type="range"
+                min={5}
+                max={60}
+                value={flashSpike}
+                onChange={(e) => setFlashSpike(Number(e.target.value))}
+              />
               <span>{flashSpike}%</span>
             </div>
             <div className="slider-row">
               <label htmlFor="avg-window">Avg window</label>
-              <input id="avg-window" type="range" min={5} max={60} value={avgWindow}
-                onChange={e => setAvgWindow(Number(e.target.value))} />
+              <input
+                id="avg-window"
+                type="range"
+                min={5}
+                max={60}
+                value={avgWindow}
+                onChange={(e) => setAvgWindow(Number(e.target.value))}
+              />
               <span>{avgWindow}f</span>
             </div>
             <div className="slider-row">
               <label htmlFor="thunder-sens">Thunder sens.</label>
-              <input id="thunder-sens" type="range" min={5} max={100} value={thunderSens}
-                onChange={e => setThunderSens(Number(e.target.value))} />
+              <input
+                id="thunder-sens"
+                type="range"
+                min={5}
+                max={100}
+                value={thunderSens}
+                onChange={(e) => setThunderSens(Number(e.target.value))}
+              />
               <span>{thunderSens}</span>
             </div>
             <div className="slider-row">
               <label htmlFor="temperature">Temperature</label>
-              <input id="temperature" type="range" min={-10} max={40} value={temperature}
-                onChange={e => setTemperature(Number(e.target.value))} />
+              <input
+                id="temperature"
+                type="range"
+                min={-10}
+                max={40}
+                value={temperature}
+                onChange={(e) => setTemperature(Number(e.target.value))}
+              />
               <span>{temperature}°C</span>
             </div>
           </div>
@@ -462,7 +579,8 @@ export default function App() {
 
           {audioOnlyMode && running && (
             <p className="permission-hint">
-              Camera access was denied — using mic only. Tap the button above when you see lightning.
+              Camera access was denied — using mic only. Tap the button above
+              when you see lightning.
             </p>
           )}
 

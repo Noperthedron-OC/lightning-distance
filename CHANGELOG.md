@@ -3,6 +3,7 @@
 ## [1.0.0] — 2026-09-16
 
 ### Added
+
 - Initial release: camera flash detection + microphone thunder detection
 - Audio-only fallback mode when camera is denied
 - Strike history within session
