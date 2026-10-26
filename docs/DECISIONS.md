@@ -23,3 +23,11 @@
 **Context:** Single loud sounds (door slam, voice) can momentarily exceed the noise floor. A sustain requirement dramatically reduces false positives.
 
 **Consequence:** Thunder must last at least ~400ms to be detected. This matches real thunder characteristics.
+
+## 2026-09-16 — Sustain counter reduced from 24 to 4 frames
+
+**Decision:** `SUSTAIN_FRAMES` is 4 (about 65 ms at 60 fps) instead of the 24 frames (about 400 ms) of the first version.
+
+**Context:** Changed in commit `183b238`, on the same day as the first decision above, together with resuming the AudioContext on start (needed on iOS). The reason for the lower value was not recorded.
+
+**Consequence:** Thunder is accepted after a much shorter low-frequency burst, which should miss less but can accept short loud sounds. The statements above about 400 ms no longer apply. The spectral shape check and the requirement of a preceding flash remain the main protection against false triggers.

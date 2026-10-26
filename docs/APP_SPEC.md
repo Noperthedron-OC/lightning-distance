@@ -29,7 +29,7 @@ Users during a thunderstorm want to know how far away lightning is. The traditio
 ## Acceptance Criteria
 
 - Flash detected within 1 frame of luminance spike exceeding threshold
-- Thunder detection requires 24 consecutive frames above exceedance threshold
+- Thunder detection requires 4 consecutive frames above exceedance threshold (was 24 in the first version, see DECISIONS.md)
 - Spectral shape check: low band >= mid band x 0.5 (rejects wind noise)
 - Distance formula: speed_of_sound x elapsed_seconds; speed = 331.3 + 0.606 x temperature_celsius
 - Result shown in km and miles
