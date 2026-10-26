@@ -67,3 +67,7 @@ Do not deploy manually. Merge to `main` after CI passes. The deployment workflow
 - Flash detection is unreliable in very bright scenes (average luminance > 180)
 - Thunder detection may false-trigger on loud nearby sounds; the sustain requirement (4 consecutive frames) reduces this
 - Requires HTTPS or localhost for camera/mic access
+
+## License
+
+[MIT](LICENSE) © 2026 Erich Weihs
