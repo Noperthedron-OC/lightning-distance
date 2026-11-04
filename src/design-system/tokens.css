@@ -1,35 +1,46 @@
 :root {
   color-scheme: dark;
 
-  /* App theme: dark stormy night. */
-  --color-canvas: #0a0a0f;
-  --color-surface: #12121e;
-  --color-surface-raised: #1a1a2e;
-  --color-text: #e0e0e0;
-  --color-text-muted: #a0a0c0;
-  --color-border: #2a2a50;
-  --color-primary: #2a2a40;
-  --color-on-primary: #e0e0e0;
-  --color-accent: #ffe066;
-  --color-focus: #ffe066;
-  --color-success: #7fff7f;
-  --color-warning: #ff8c42;
-  --color-danger: #ff8888;
-  --color-thunder: #60b8ff;
+  /*
+   * App theme: warm dark, taken from the "warm dark" theme of erichweihs.com
+   * (lamp black ground, Amber Glow accent). Flash is amber, thunder is the
+   * site's Pocket Teal light step. See docs/DESIGN.md.
+   */
+  --color-canvas: #15100b;
+  --color-surface: #211912;
+  --color-surface-raised: #2e2215;
+  --color-text: #f1e8dc;
+  --color-text-muted: #b3a596;
+  --color-border: #3a2e22;
+  --color-border-strong: #7c6c5b;
+  --color-primary: #d9a35e;
+  --color-primary-hover: #f1e8dc;
+  --color-on-primary: #15100b;
+  --color-accent: #d9a35e;
+  --color-focus: #d9a35e;
+  --color-success: #a9c48d;
+  --color-warning: #f0b86e;
+  --color-danger: #e98a6f;
+  --color-flash: var(--color-accent);
+  --color-flash-light: #fff3df;
+  --color-thunder: #4fb0c0;
 
   /* House tokens: keep stable across apps. */
   --font-ui:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Lato, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
+  --font-display:
+    'Josefin Sans Variable', 'Josefin Sans', Futura, 'Century Gothic',
+    sans-serif;
   --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: clamp(1.35rem, 3vw, 1.75rem);
-  --text-display: clamp(2.35rem, 8vw, 5.5rem);
-  --leading-tight: 1.05;
-  --leading-normal: 1.55;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.3125rem;
+  --text-xl: clamp(1.5rem, 4vw, 2.125rem);
+  --text-display: clamp(3.25rem, 15vw, 4.5rem);
+  --leading-tight: 1;
+  --leading-normal: 1.65;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -40,14 +51,17 @@
   --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.85rem;
-  --radius-lg: 1.35rem;
-  --radius-pill: 999px;
-  --shadow-raised: 0 18px 50px rgb(43 38 29 / 10%);
-  --control-height: 2.75rem;
-  --content-width: 74rem;
-  --motion-fast: 140ms;
-  --motion-normal: 220ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  /* The site's design system has no rounded corners. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-pill: 0;
+  --border-hairline: 1px;
+  --border-strong: 2px;
+  --shadow-raised: none;
+  --control-height: 3rem;
+  --content-width: 68rem;
+  --motion-fast: 160ms;
+  --motion-normal: 420ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
 }

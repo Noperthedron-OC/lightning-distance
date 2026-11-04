@@ -70,6 +70,8 @@ export default defineConfig({
       workbox: {
         cacheId: app.slug,
         cleanupOutdatedCaches: true,
+        // Fonts are self-hosted; precache them so the app looks the same offline.
+        globPatterns: ['**/*.{js,css,html,woff2}'],
         navigateFallback: 'index.html',
       },
     }),

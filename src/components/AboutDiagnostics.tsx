@@ -1,5 +1,5 @@
 import { Dialog } from '@base-ui/react/dialog'
-import { Activity, RefreshCw, X } from 'lucide-react'
+import { Info, RefreshCw, X } from 'lucide-react'
 
 type AboutDiagnosticsProps = {
   online: boolean
@@ -19,8 +19,10 @@ export function AboutDiagnostics({
   return (
     <Dialog.Root>
       <Dialog.Trigger className="text-button">
-        <Activity aria-hidden="true" size={16} />
-        About & diagnostics
+        <Info aria-hidden="true" size={18} />
+        <span>
+          About<span className="hide-narrow"> & diagnostics</span>
+        </span>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="dialog-backdrop" />

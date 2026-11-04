@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- New look in the warm dark style of erichweihs.com: lamp black ground, amber flash, teal thunder, Josefin Sans and Lato, square corners
+- Clearer layout: the start button sits right under the camera; the last strike is shown large with a line from flash to thunder; history and settings are labelled lists
+- Viewfinder corners in the camera view change colour with the state (watching, flash, thunder)
+- Lucide icons instead of emoji in status messages and the intro
+- Slider labels written out (average window, thunder sensitivity) with units
+- App icons and theme colour in the new palette
+- Fonts are precached, so the app looks the same offline
+
 ## [1.0.0] — 2026-09-16
 
 ### Added

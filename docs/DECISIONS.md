@@ -31,3 +31,11 @@
 **Context:** Changed in commit `183b238`, on the same day as the first decision above, together with resuming the AudioContext on start (needed on iOS). The reason for the lower value was not recorded.
 
 **Consequence:** Thunder is accepted after a much shorter low-frequency burst, which should miss less but can accept short loud sounds. The statements above about 400 ms no longer apply. The spectral shape check and the requirement of a preceding flash remain the main protection against false triggers.
+
+## 2026-11-04 — Website typography and square corners instead of the house defaults
+
+**Decision:** The app uses the "warm dark" theme of erichweihs.com: Josefin Sans and Lato (self-hosted, latin subset), all radius tokens 0, sentence case, hairlines instead of shadows.
+
+**Context:** Erich asked for the app to look like the website where it is presented. The Portable Web App Standard keeps body and UI typography and the corner-radius family constant across apps and defaults to a system sans-serif stack.
+
+**Consequence:** This deviates from the house type and radius defaults; the token structure (house and theme layers, semantic names) is unchanged, so other apps are not affected. The fonts are part of the bundle and precached (`globPatterns` includes `woff2`), so the app looks the same offline. If more apps adopt the website style, move these values into the shared starter instead of repeating this deviation.
