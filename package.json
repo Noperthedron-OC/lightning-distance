@@ -16,7 +16,8 @@
     "format:check": "prettier --check .",
     "check:pwa": "node scripts/check-pwa.mjs",
     "configure": "node scripts/configure.mjs",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "hero": "node scripts/hero/render-hero.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

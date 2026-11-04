@@ -4,6 +4,8 @@ Measures how far away a thunderstorm is. Detects lightning flashes through the c
 
 **Production URL:** https://ai-lab.erichweihs.com/lightning-distance/
 
+![The app on a phone during a storm: the camera sees the flash, the microphone hears the thunder 3.70 seconds later, which at 343 m/s puts the strike 1.27 km away.](docs/images/lightning-distance-how-it-works.jpg)
+
 ## Background
 
 Lightning Distance started as a voice prompt. On 23 August 2026 the author was on the way home from a festival, dictated the idea to an AI coding agent (detect the flash with the camera, detect the thunder with the microphone, compute the distance), and ten minutes later, when arriving home, the app was already deployed and working. The thunderstorm was over by then, so the first test was a YouTube video of a thunderstorm, and it kind of worked. Since then the thunder detection has been refined; the commit history and [docs/DECISIONS.md](docs/DECISIONS.md) show the steps.
@@ -43,6 +45,10 @@ npm run dev
 ```
 
 Then open http://localhost:5173/lightning-distance/
+
+## Hero picture
+
+`npm run hero` builds the app, runs it in Chromium with a drawn storm sky as camera and renders `docs/images/lightning-distance-how-it-works.jpg` (2400 × 1500, used on erichweihs.com). Run it again after visible changes to the app; see [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Build & Preview
 

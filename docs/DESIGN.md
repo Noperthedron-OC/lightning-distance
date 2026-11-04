@@ -48,3 +48,7 @@ Single page, no routing. Intro dialog on first load; About & diagnostics in the 
 ## Icons
 
 UI icons from Lucide (no emoji). App icon: amber bolt between muted viewfinder corners on lamp black, square; sources in `public/icons/*.svg`.
+
+## Hero picture
+
+`docs/images/lightning-distance-how-it-works.jpg` (2400 × 1500) explains the app in one picture and is used on erichweihs.com. `npm run hero` renders it again from `scripts/hero/`: it draws the storm scene, runs the built app in Chromium with the scene as fake camera, taps the five strikes of the original screenshot (last one 3.70 s at 20 °C, 1.27 km) and places the phone screen in the scene. Run it after visible changes to the app.

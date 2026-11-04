@@ -12,6 +12,10 @@
 - App icons and theme colour in the new palette
 - Fonts are precached, so the app looks the same offline
 
+### Added
+
+- `npm run hero` renders the picture that explains the app (`docs/images/lightning-distance-how-it-works.jpg`)
+
 ## [1.0.0] — 2026-09-16
 
 ### Added
