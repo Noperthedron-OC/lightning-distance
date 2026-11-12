@@ -1,26 +1,50 @@
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  border-radius: var(--radius-sm);
 }
 
 html {
   min-height: 100%;
   background: var(--color-canvas);
   font-family: var(--font-ui);
+  font-size: 100%;
   color: var(--color-text);
+  -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  /* A low lamp glow from above, the only decoration on the page ground. */
   background:
     radial-gradient(
-      circle at 90% 5%,
-      color-mix(in srgb, var(--color-accent) 12%, transparent),
-      transparent 24rem
+      ellipse 70rem 32rem at 50% -8rem,
+      color-mix(in srgb, var(--color-accent) 13%, transparent),
+      transparent 70%
     ),
     var(--color-canvas);
+  background-repeat: no-repeat;
+}
+
+/* One style per sentence: no italics and no capitals transforms anywhere. */
+em,
+i,
+cite,
+dfn {
+  font-style: normal;
+}
+
+::selection {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
 }
 
 button,
@@ -28,6 +52,7 @@ input,
 textarea,
 select {
   font: inherit;
+  color: inherit;
 }
 
 button,
@@ -35,63 +60,15 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible,
-a:focus-visible,
-[tabindex]:focus-visible {
-  outline: 3px solid var(--color-focus);
+a {
+  color: var(--color-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+:focus-visible {
+  outline: var(--border-strong) solid var(--color-focus);
   outline-offset: 3px;
-}
-
-.app-header,
-main,
-footer {
-  width: min(100% - 2rem, var(--content-width));
-  margin-inline: auto;
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  min-height: 5rem;
-  padding-top: env(safe-area-inset-top);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  color: inherit;
-  font-weight: 720;
-  text-decoration: none;
-}
-
-.brand-mark {
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
-  border-radius: 35% 65% 62% 38% / 43% 38% 62% 57%;
-  color: var(--color-on-primary);
-  background: var(--color-primary);
-}
-
-main {
-  padding-block: clamp(3rem, 9vw, 8rem) var(--space-16);
-}
-
-.hero {
-  max-width: 58rem;
-}
-
-.eyebrow,
-.card-number {
-  color: var(--color-primary);
-  font-size: var(--text-xs);
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
 }
 
 h1,
@@ -101,24 +78,26 @@ p {
   margin-top: 0;
 }
 
-h1 {
-  max-width: 12ch;
-  margin-bottom: var(--space-6);
-  font-size: var(--text-display);
-  font-weight: 650;
-  letter-spacing: -0.055em;
-  line-height: var(--leading-tight);
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-kerning: normal;
 }
 
 h2 {
   margin-bottom: var(--space-3);
   font-size: var(--text-xl);
-  letter-spacing: -0.025em;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 h3 {
   margin-top: var(--space-8);
   margin-bottom: var(--space-2);
+  font-size: var(--text-lg);
+  line-height: 1.3;
 }
 
 p,
@@ -126,13 +105,38 @@ li {
   line-height: var(--leading-normal);
 }
 
-.hero-copy {
-  max-width: 62ch;
-  margin-bottom: var(--space-8);
-  color: var(--color-text-muted);
-  font-size: var(--text-lg);
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
 }
 
+.muted {
+  color: var(--color-text-muted);
+}
+
+/* Hidden on phones but still read out, e.g. the rest of a button name. */
+@media (max-width: 30rem) {
+  .hide-narrow {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Section labels: small, bold, in the accent, sentence case. */
+.label {
+  margin: 0;
+  color: var(--color-accent);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.33;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
 .button,
 .icon-button,
 .text-button {
@@ -145,13 +149,18 @@ li {
   min-height: var(--control-height);
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   padding: 0 var(--space-5);
-  border-radius: var(--radius-pill);
+  border: var(--border-strong) solid transparent;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
   font-weight: 700;
+  line-height: 1.33;
+  text-decoration: none;
   transition:
-    transform var(--motion-fast) var(--ease-standard),
-    background var(--motion-fast) var(--ease-standard);
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
 }
 
 .button:active {
@@ -159,24 +168,29 @@ li {
 }
 
 .button-primary {
+  border-color: var(--color-primary);
   color: var(--color-on-primary);
   background: var(--color-primary);
 }
 
 .button-primary:hover {
+  border-color: var(--color-primary-hover);
   background: var(--color-primary-hover);
 }
 
 .button-secondary {
-  border: 1px solid var(--color-border);
+  border-color: var(--color-border-strong);
   color: var(--color-text);
-  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+  background: transparent;
+}
+
+.button-secondary:hover {
+  border-color: var(--color-text);
 }
 
 .button-small {
-  min-height: 2.25rem;
+  min-height: 2.5rem;
   padding-inline: var(--space-4);
-  font-size: var(--text-sm);
 }
 
 .text-button {
@@ -184,10 +198,15 @@ li {
   min-height: 2.75rem;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2);
-  color: var(--color-primary);
+  padding: var(--space-2) 0;
+  color: var(--color-accent);
+  font-size: var(--text-sm);
   font-weight: 700;
   background: transparent;
+}
+
+.text-button:hover {
+  color: var(--color-text);
 }
 
 .icon-button {
@@ -195,43 +214,21 @@ li {
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border-radius: 50%;
-  color: var(--color-text);
+  color: var(--color-text-muted);
   background: transparent;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-  margin-top: clamp(4rem, 10vw, 8rem);
+.icon-button:hover {
+  color: var(--color-text);
 }
 
-.card {
-  min-height: 15rem;
-  padding: var(--space-6);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
-}
-
-.card p:last-child,
-.muted {
-  color: var(--color-text-muted);
-}
-
-footer {
-  padding-block: var(--space-8)
-    calc(var(--space-8) + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border);
-}
-
+/* ── Dialogs ──────────────────────────────────────────────────────────────── */
 .dialog-backdrop {
   position: fixed;
   z-index: 20;
   inset: 0;
-  background: rgb(22 24 20 / 55%);
-  backdrop-filter: blur(6px);
+  background: rgb(10 7 4 / 78%);
+  backdrop-filter: blur(4px);
 }
 
 .dialog-popup {
@@ -240,14 +237,12 @@ footer {
   top: 50%;
   left: 50%;
   width: min(calc(100% - 2rem), 34rem);
-  max-height: min(80vh, 45rem);
+  max-height: min(85vh, 46rem);
   overflow: auto;
   padding: var(--space-6);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border: var(--border-hairline) solid var(--color-border);
   color: var(--color-text);
-  background: var(--color-surface-raised);
-  box-shadow: var(--shadow-raised);
+  background: var(--color-surface);
   transform: translate(-50%, -50%);
 }
 
@@ -257,8 +252,10 @@ footer {
   justify-content: space-between;
   gap: var(--space-4);
   margin-bottom: var(--space-2);
+  font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.12;
 }
 
 .dialog-popup > .button {
@@ -270,6 +267,7 @@ footer {
   display: grid;
   gap: 0;
   margin-block: var(--space-6);
+  border-top: var(--border-hairline) solid var(--color-border);
 }
 
 .diagnostics > div {
@@ -277,7 +275,8 @@ footer {
   grid-template-columns: minmax(7rem, 1fr) 2fr;
   gap: var(--space-4);
   padding-block: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: var(--border-hairline) solid var(--color-border);
+  font-size: var(--text-sm);
 }
 
 .diagnostics dt {
@@ -292,10 +291,11 @@ footer {
 .signature {
   margin: var(--space-8) 0 0;
   color: var(--color-text-muted);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   text-align: center;
 }
 
+/* ── Notices ──────────────────────────────────────────────────────────────── */
 .notice-stack {
   position: fixed;
   z-index: 30;
@@ -316,40 +316,23 @@ footer {
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-raised);
-  box-shadow: var(--shadow-raised);
+  border: var(--border-hairline) solid var(--color-border-strong);
+  font-size: var(--text-sm);
+  background: var(--color-surface);
   pointer-events: auto;
 }
 
 .notice-update {
-  border-color: color-mix(
-    in srgb,
-    var(--color-primary) 60%,
-    var(--color-border)
-  );
+  border-color: var(--color-accent);
 }
 
 .notice-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
 @media (max-width: 48rem) {
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .card {
-    min-height: auto;
-  }
-
-  .app-header .button {
-    padding-inline: var(--space-3);
-  }
-
   .notice {
     align-items: flex-start;
     flex-direction: column;

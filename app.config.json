@@ -4,7 +4,7 @@
   "shortName": "Lightning",
   "description": "Measure storm distance using camera flash detection and microphone thunder detection",
   "theme": {
-    "primary": "#0a0a0f",
-    "background": "#0a0a0f"
+    "primary": "#15100b",
+    "background": "#15100b"
   }
 }

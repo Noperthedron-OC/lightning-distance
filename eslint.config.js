@@ -25,4 +25,11 @@ export default tseslint.config(
       globals: globals.node,
     },
   },
+  {
+    // The hero script also runs functions inside the browser page.
+    files: ['scripts/hero/**/*.mjs'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
 )

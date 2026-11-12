@@ -1,4 +1,19 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  type CSSProperties,
+} from 'react'
+import {
+  AudioLines,
+  Camera,
+  Ear,
+  Eye,
+  RotateCcw,
+  TriangleAlert,
+  Zap,
+} from 'lucide-react'
 import './App.css'
 import { usePwa } from './pwa/usePwa'
 import { PwaNotices } from './components/PwaNotices'
@@ -15,10 +30,18 @@ type AppPhase = 'idle' | 'watching' | 'flash' | 'thunder-detected'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SUSTAIN_FRAMES = 4
+const WATCHING = 'Watching for lightning…'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function speedOfSound(tempC: number): number {
   return 331.3 + 0.606 * tempC
+}
+
+// Slider fill for WebKit, which has no ::range-progress.
+function sliderFill(value: number, min: number, max: number): CSSProperties {
+  return {
+    '--fill': `${((value - min) / (max - min)) * 100}%`,
+  } as CSSProperties
 }
 
 function getAverageLuminance(imageData: ImageData): number {
@@ -42,24 +65,39 @@ function IntroModal({ onClose }: { onClose: () => void }) {
       aria-labelledby="intro-title"
     >
       <div className="intro-box">
+        <p className="label">How far away is the storm?</p>
         <h2 id="intro-title">Lightning Distance</h2>
         <p>
           This app measures how far away a thunderstorm is. It watches for a
           lightning flash through the camera and listens for the thunder through
           the microphone. The time between the two determines the distance.
         </p>
-        <p>
-          Point the camera at the sky during a storm. When lightning flashes,
-          the timer starts. When thunder arrives, it stops and shows the
-          distance.
-        </p>
-        <p>
+        <ol className="intro-steps">
+          <li>
+            <Zap aria-hidden="true" size={18} className="intro-icon-flash" />
+            <span>
+              Point the camera at the sky. When lightning flashes, the timer
+              starts.
+            </span>
+          </li>
+          <li>
+            <AudioLines
+              aria-hidden="true"
+              size={18}
+              className="intro-icon-thunder"
+            />
+            <span>
+              When the thunder arrives, it stops and shows the distance.
+            </span>
+          </li>
+        </ol>
+        <p className="muted">
           The app needs access to your camera and microphone to work. Both are
           used locally — nothing is sent anywhere.
         </p>
 
         <details>
-          <summary>📱 Install on Android</summary>
+          <summary>Install on Android</summary>
           <div className="install-steps">
             <ol>
               <li>
@@ -79,14 +117,14 @@ function IntroModal({ onClose }: { onClose: () => void }) {
         </details>
 
         <details>
-          <summary>🍎 Install on iPhone / iPad</summary>
+          <summary>Install on iPhone / iPad</summary>
           <div className="install-steps">
             <ol>
               <li>
                 Open this page in <strong>Safari</strong>
               </li>
               <li>
-                Tap the <strong>Share button</strong> ⎙ (bottom bar)
+                Tap the <strong>Share button</strong> (bottom bar)
               </li>
               <li>
                 Scroll down and tap <strong>"Add to Home Screen"</strong>
@@ -98,7 +136,7 @@ function IntroModal({ onClose }: { onClose: () => void }) {
           </div>
         </details>
 
-        <button className="btn-primary" onClick={onClose}>
+        <button className="button button-primary intro-close" onClick={onClose}>
           Got it
         </button>
       </div>
@@ -167,7 +205,7 @@ export default function App() {
     setFlashOverlay(true)
     setTimeout(() => setFlashOverlay(false), 100)
     setPhase('flash')
-    setStatusText('⚡ Flash! Listening for thunder…')
+    setStatusText('Flash. Listening for thunder…')
     setTimerSec(0)
 
     // Timer display
@@ -199,14 +237,14 @@ export default function App() {
 
     setResult({ km: distKm, mi: distMi, sec: elapsed, soundSpeed: v })
     setPhase('thunder-detected')
-    setStatusText('🌩 Thunder detected')
+    setStatusText('Thunder detected')
     setHistory((h) => [
       { km: distKm, sec: elapsed, id: ++strikeIdRef.current },
       ...h,
     ])
 
     setTimeout(() => {
-      setStatusText('👁 Watching…')
+      setStatusText(WATCHING)
       setPhase('watching')
     }, 3000)
   }, [temperature])
@@ -280,7 +318,7 @@ export default function App() {
     const avg = history.length
       ? history.reduce((a, b) => a + b, 0) / history.length
       : 0
-    setLumInfo(`lum ${lum.toFixed(1)} / avg ${avg.toFixed(1)}`)
+    setLumInfo(`Brightness ${lum.toFixed(1)} · average ${avg.toFixed(1)}`)
     setBrightWarning(avg > 180)
 
     if (flashCooldownRef.current > 0) {
@@ -359,9 +397,9 @@ export default function App() {
     setPhase('watching')
 
     if (audioOnly) {
-      setStatusText('👂 Listening — tap flash button when you see lightning')
+      setStatusText('Listening. Tap the flash button when you see lightning.')
     } else {
-      setStatusText('👁 Watching…')
+      setStatusText(WATCHING)
     }
   }, [])
 
@@ -438,7 +476,7 @@ export default function App() {
       timerRafRef.current = null
     }
     setPhase('watching')
-    setStatusText('👁 Watching…')
+    setStatusText(WATCHING)
   }
 
   const handleCanvasClick = () => {
@@ -452,9 +490,18 @@ export default function App() {
       ? 'status flash'
       : phase === 'thunder-detected'
         ? 'status thunder'
-        : result
-          ? 'status result'
-          : 'status'
+        : 'status'
+
+  const StatusIcon =
+    phase === 'flash'
+      ? Zap
+      : phase === 'thunder-detected'
+        ? AudioLines
+        : phase === 'watching'
+          ? audioOnlyMode
+            ? Ear
+            : Eye
+          : null
 
   return (
     <>
@@ -471,7 +518,12 @@ export default function App() {
 
       <div className="app-shell">
         <header className="app-header">
-          <h1>⚡ Lightning Distance</h1>
+          <h1 className="brand">
+            <span className="brand-mark" aria-hidden="true">
+              <Zap size={18} strokeWidth={2.25} />
+            </span>
+            Lightning Distance
+          </h1>
           <AboutDiagnostics
             online={online}
             registrationState={registrationState}
@@ -481,145 +533,234 @@ export default function App() {
         </header>
 
         <main className="app-main">
-          {/* Camera view */}
-          <div
-            className="camera-container"
-            style={{ display: audioOnlyMode ? 'none' : undefined }}
-          >
-            <canvas
-              ref={canvasRef}
-              className="camera-canvas"
-              width={640}
-              height={480}
-              onClick={handleCanvasClick}
-              aria-label="Camera view — tap to mark flash or thunder"
-            />
-            <div className="tap-hint">tap to mark ⚡ or 🌩</div>
-            {flashOverlay && <div className="flash-overlay" />}
-            {phase === 'flash' && (
-              <div className="timer-ring" aria-live="off">
-                <span className="timer-text">{timerSec.toFixed(1)}s</span>
-              </div>
+          <section className="stage" aria-label="Camera and controls">
+            {/* Camera view */}
+            <div
+              className={`viewfinder phase-${phase}`}
+              style={{ display: audioOnlyMode ? 'none' : undefined }}
+            >
+              <canvas
+                ref={canvasRef}
+                className="camera-canvas"
+                width={640}
+                height={480}
+                onClick={handleCanvasClick}
+                aria-label="Camera view — tap to mark flash or thunder"
+              />
+              <div className="viewfinder-frame" aria-hidden="true" />
+              {!running && (
+                <div className="viewfinder-idle" aria-hidden="true">
+                  <Camera size={28} strokeWidth={1.5} />
+                  <span>Point the camera at the sky</span>
+                </div>
+              )}
+              {running && (
+                <div className="tap-hint" aria-hidden="true">
+                  Tap to mark flash, then thunder
+                </div>
+              )}
+              {flashOverlay && <div className="flash-overlay" />}
+              {phase === 'flash' && (
+                <div className="timer" aria-live="off">
+                  <span className="timer-text">
+                    {timerSec.toFixed(1)}
+                    <span className="timer-unit">s</span>
+                  </span>
+                </div>
+              )}
+            </div>
+            {lumInfo && <p className="lum-display">{lumInfo}</p>}
+
+            {/* Status */}
+            <p className={statusClass} aria-live="polite">
+              {StatusIcon && <StatusIcon aria-hidden="true" size={20} />}
+              <span>{statusText}</span>
+            </p>
+            {brightWarning && (
+              <p className="bright-warning">
+                <TriangleAlert aria-hidden="true" size={16} />
+                Very bright scene — flash detection unreliable
+              </p>
             )}
-          </div>
 
-          {/* Status */}
-          <p className={statusClass} aria-live="polite">
-            {statusText}
-          </p>
-          {brightWarning && (
-            <p className="bright-warning">
-              ⚠️ Very bright scene — flash detection unreliable
-            </p>
-          )}
+            {/* Buttons */}
+            <div className="actions">
+              <button
+                className={`button button-start${running ? ' running' : ''}`}
+                onClick={handleStartStop}
+              >
+                {running ? (
+                  <>
+                    <span className="live-dot" aria-hidden="true" />
+                    Listening — tap to stop
+                  </>
+                ) : (
+                  <>
+                    <Camera aria-hidden="true" size={20} />
+                    Start Camera & Mic
+                  </>
+                )}
+              </button>
 
-          {/* Result card */}
-          {result && (
-            <div className="result-card">
-              <div className="result-main">
-                {result.km.toFixed(2)} km &nbsp; ({result.mi.toFixed(2)} mi)
+              {audioOnlyMode && running && (
+                <button
+                  className="button button-flash"
+                  onClick={() => onFlash()}
+                >
+                  <Zap aria-hidden="true" size={22} />I saw a flash!
+                </button>
+              )}
+
+              {audioOnlyMode && running && (
+                <p className="permission-hint">
+                  Camera access was denied — using mic only. Tap the button
+                  above when you see lightning.
+                </p>
+              )}
+
+              {phase === 'flash' && (
+                <button className="text-button btn-reset" onClick={handleReset}>
+                  <RotateCcw aria-hidden="true" size={16} />
+                  Reset last flash
+                </button>
+              )}
+            </div>
+          </section>
+
+          <section className="readings" aria-label="Measurements">
+            {/* Result card */}
+            <section className="readout" aria-labelledby="readout-title">
+              <h2 id="readout-title" className="label">
+                Last strike
+              </h2>
+              {result ? (
+                <>
+                  <p className="readout-distance">
+                    <span className="readout-value">
+                      {result.km.toFixed(2)}
+                    </span>
+                    <span className="readout-unit">km</span>
+                    <span className="readout-alt">
+                      {result.mi.toFixed(2)} mi
+                    </span>
+                  </p>
+                  <div className="delay-line" aria-hidden="true">
+                    <span className="delay-end delay-flash">
+                      <Zap size={16} />
+                      Flash
+                    </span>
+                    <span className="delay-track">
+                      <span className="delay-time">
+                        {result.sec.toFixed(2)} s
+                      </span>
+                    </span>
+                    <span className="delay-end delay-thunder">
+                      Thunder
+                      <AudioLines size={16} />
+                    </span>
+                  </div>
+                  <p className="readout-meta">
+                    {result.sec.toFixed(2)} s delay ·{' '}
+                    {result.soundSpeed.toFixed(0)} m/s · Rule of thumb:{' '}
+                    {(result.sec / 3).toFixed(1)} km
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="readout-distance readout-empty">
+                    <span className="readout-value">–</span>
+                    <span className="readout-unit">km</span>
+                  </p>
+                  <p className="readout-meta">
+                    The seconds between flash and thunder, times the speed of
+                    sound, give the distance.
+                  </p>
+                </>
+              )}
+            </section>
+
+            {/* History */}
+            {history.length > 0 && (
+              <section
+                className="history-section"
+                aria-labelledby="history-title"
+              >
+                <h2 id="history-title" className="label">
+                  Strike history
+                </h2>
+                <ul className="history-list">
+                  {history.map((s) => (
+                    <li key={s.id} className="history-item">
+                      <span className="history-index" aria-hidden="true">
+                        {String(s.id).padStart(2, '0')}
+                      </span>
+                      <span className="history-km">{s.km.toFixed(2)} km</span>
+                      <span className="history-sec">{s.sec.toFixed(1)} s</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Controls / Settings */}
+            <section className="controls" aria-labelledby="settings-title">
+              <h2 id="settings-title" className="label">
+                Detection settings
+              </h2>
+              <div className="slider-row">
+                <label htmlFor="flash-spike">Flash spike</label>
+                <output htmlFor="flash-spike">{flashSpike} %</output>
+                <input
+                  id="flash-spike"
+                  type="range"
+                  min={5}
+                  max={60}
+                  value={flashSpike}
+                  style={sliderFill(flashSpike, 5, 60)}
+                  onChange={(e) => setFlashSpike(Number(e.target.value))}
+                />
               </div>
-              <div className="result-sub">
-                {result.sec.toFixed(2)}s delay · {result.soundSpeed.toFixed(0)}{' '}
-                m/s · Rule of thumb: {(result.sec / 3).toFixed(1)} km
+              <div className="slider-row">
+                <label htmlFor="avg-window">Average window</label>
+                <output htmlFor="avg-window">{avgWindow} frames</output>
+                <input
+                  id="avg-window"
+                  type="range"
+                  min={5}
+                  max={60}
+                  value={avgWindow}
+                  style={sliderFill(avgWindow, 5, 60)}
+                  onChange={(e) => setAvgWindow(Number(e.target.value))}
+                />
               </div>
-            </div>
-          )}
-
-          {/* History */}
-          {history.length > 0 && (
-            <div className="history-section">
-              <h2 className="history-heading">Strike history</h2>
-              <ul className="history-list">
-                {history.map((s) => (
-                  <li key={s.id} className="history-item">
-                    {s.km.toFixed(2)} km ({s.sec.toFixed(1)}s)
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {lumInfo && <p className="lum-display">{lumInfo}</p>}
-
-          {/* Controls / Settings */}
-          <div className="controls">
-            <div className="slider-row">
-              <label htmlFor="flash-spike">Flash spike</label>
-              <input
-                id="flash-spike"
-                type="range"
-                min={5}
-                max={60}
-                value={flashSpike}
-                onChange={(e) => setFlashSpike(Number(e.target.value))}
-              />
-              <span>{flashSpike}%</span>
-            </div>
-            <div className="slider-row">
-              <label htmlFor="avg-window">Avg window</label>
-              <input
-                id="avg-window"
-                type="range"
-                min={5}
-                max={60}
-                value={avgWindow}
-                onChange={(e) => setAvgWindow(Number(e.target.value))}
-              />
-              <span>{avgWindow}f</span>
-            </div>
-            <div className="slider-row">
-              <label htmlFor="thunder-sens">Thunder sens.</label>
-              <input
-                id="thunder-sens"
-                type="range"
-                min={5}
-                max={100}
-                value={thunderSens}
-                onChange={(e) => setThunderSens(Number(e.target.value))}
-              />
-              <span>{thunderSens}</span>
-            </div>
-            <div className="slider-row">
-              <label htmlFor="temperature">Temperature</label>
-              <input
-                id="temperature"
-                type="range"
-                min={-10}
-                max={40}
-                value={temperature}
-                onChange={(e) => setTemperature(Number(e.target.value))}
-              />
-              <span>{temperature}°C</span>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <button
-            className={`btn-start${running ? ' running' : ''}`}
-            onClick={handleStartStop}
-          >
-            {running ? 'Listening — tap to stop' : 'Start Camera & Mic'}
-          </button>
-
-          {audioOnlyMode && running && (
-            <button className="btn-flash" onClick={() => onFlash()}>
-              ⚡ I saw a flash!
-            </button>
-          )}
-
-          {audioOnlyMode && running && (
-            <p className="permission-hint">
-              Camera access was denied — using mic only. Tap the button above
-              when you see lightning.
-            </p>
-          )}
-
-          {phase === 'flash' && (
-            <button className="btn-reset" onClick={handleReset}>
-              Reset last flash
-            </button>
-          )}
+              <div className="slider-row">
+                <label htmlFor="thunder-sens">Thunder sensitivity</label>
+                <output htmlFor="thunder-sens">{thunderSens}</output>
+                <input
+                  id="thunder-sens"
+                  type="range"
+                  min={5}
+                  max={100}
+                  value={thunderSens}
+                  style={sliderFill(thunderSens, 5, 100)}
+                  onChange={(e) => setThunderSens(Number(e.target.value))}
+                />
+              </div>
+              <div className="slider-row">
+                <label htmlFor="temperature">Temperature</label>
+                <output htmlFor="temperature">{temperature} °C</output>
+                <input
+                  id="temperature"
+                  type="range"
+                  min={-10}
+                  max={40}
+                  value={temperature}
+                  style={sliderFill(temperature, -10, 40)}
+                  onChange={(e) => setTemperature(Number(e.target.value))}
+                />
+              </div>
+            </section>
+          </section>
         </main>
       </div>
     </>
